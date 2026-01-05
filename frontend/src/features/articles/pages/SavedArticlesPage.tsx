@@ -102,6 +102,7 @@ export function SavedArticlesPage() {
         <ArticleList
           articles={savedArticles}
           emptyMessage="保存した記事がありません"
+          onSessionClick={() => {}}
         />
       </div>
     </AppLayout>

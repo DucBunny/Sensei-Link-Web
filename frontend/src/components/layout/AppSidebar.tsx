@@ -10,7 +10,7 @@ import {
   User,
   Users,
 } from 'lucide-react'
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { clearCurrentUser, getCurrentUser } from '@/api'
 import {
   Sidebar,
@@ -35,11 +35,15 @@ const menuItems = [
 export const AppSidebar = memo(() => {
   const { theme, setTheme } = useTheme()
   const [user, setUser] = useState(() => getCurrentUser())
+  const navigate = useNavigate()
 
   const logOut = () => {
     clearCurrentUser()
     setUser(null)
-    window.location.reload()
+    navigate({ to: '/' })
+    setTimeout(() => {
+      window.location.reload()
+    }, 1)
   }
 
   return (

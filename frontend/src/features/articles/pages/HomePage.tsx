@@ -7,7 +7,7 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { TopicFilter } from '@/features/topics/components/TopicFilter'
 import { ArticleList } from '@/features/articles/components/ArticleList'
 import { CreateArticleDialog } from '@/features/articles/components/CreateArticleDialog'
-import { getAllArticles } from '@/api/articles'
+import { getAllArticles, getRecommendedArticlesForUser } from '@/api/articles'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { CreateSessionDialog } from '@/features/sessions/components/CreateSessionDialog'
 import { JoinSessionDialog } from '@/features/sessions/components/JoinSessionDialog'
@@ -60,6 +60,12 @@ export function HomePage() {
     })
   }, [selectedTopicIds, searchQuery, refreshKey])
 
+  const recommendedArticles = useMemo(() => {
+    if (!currentUser) return []
+
+    return getRecommendedArticlesForUser(currentUser.id, 3)
+  }, [currentUser?.id, refreshKey])
+
   return (
     <AppLayout
       searchQuery={searchQuery}
@@ -75,6 +81,20 @@ export function HomePage() {
             教育の知見を発見し、同僚の教師と共有しましょう
           </p>
         </div>
+
+        {currentUser && recommendedArticles.length > 0 && (
+          <div className="mb-8 space-y-3">
+            <div>
+              <h2 className="text-xl font-semibold">おすすめ</h2>
+            </div>
+
+            <ArticleList
+              articles={recommendedArticles}
+              emptyMessage="おすすめがまだありません"
+              onSessionClick={handleSessionClick}
+            />
+          </div>
+        )}
 
         <div className="mb-6">
           <TopicFilter

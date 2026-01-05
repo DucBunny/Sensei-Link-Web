@@ -39,6 +39,20 @@ export function getSessionsByArticle(articleId: string): ConnectionSession {
 }
 
 /**
+ * Get sessions a user is involved in (as host or participant)
+ */
+export function getSessionsForUser(userId: string): Array<ConnectionSession> {
+  if (!userId) return []
+
+  const sessions = getAllSessions()
+
+  return sessions.filter(
+    (session) =>
+      session.hostId === userId || session.participantIds.includes(userId),
+  )
+}
+
+/**
  * Create a new session
  */
 export function createSession(data: CreateSessionInput): ConnectionSession {

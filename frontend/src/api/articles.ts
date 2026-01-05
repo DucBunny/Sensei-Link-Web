@@ -1,5 +1,6 @@
 import { getAllTopics } from './topics'
-import { getCurrentUser } from './users'
+import { getCurrentUser, getSavedArticles } from './users'
+import { getSessionsForUser } from './sessions'
 import type {
   Article,
   CreateArticleInput,
@@ -81,6 +82,71 @@ export function getArticleById(id: string): Article | null {
   const articles = getAllArticles()
   const article = articles.find((a) => a.id === id)
   return article || null
+}
+
+/**
+ * Calculate topic scores for a user
+ * - Each session participation/hosting on a topic: +5
+ * - Each saved article's topic: +1
+ */
+export function calculateUserTopicScores(
+  userId: string,
+): Record<string, number> {
+  if (!userId) return {}
+
+  const scores: Record<string, number> = {}
+  const articles = getAllArticles()
+
+  // Weight from sessions
+  const userSessions = getSessionsForUser(userId)
+  userSessions.forEach((session) => {
+    scores[session.topicId] = (scores[session.topicId] || 0) + 5
+  })
+
+  // Weight from saved articles
+  const savedArticleIds = getSavedArticles()
+  savedArticleIds.forEach((articleId) => {
+    const article = articles.find((item) => item.id === articleId)
+    if (article) {
+      scores[article.topicId] = (scores[article.topicId] || 0) + 1
+    }
+  })
+
+  return scores
+}
+
+/**
+ * Get recommended articles for a user based on joined sessions and saved articles
+ */
+export function getRecommendedArticlesForUser(
+  userId: string,
+  limit = 6,
+): Array<Article> {
+  if (!userId) return []
+
+  const articles = getAllArticles()
+  const topicScores = calculateUserTopicScores(userId)
+
+  // No scores, return empty
+  if (Object.keys(topicScores).length === 0) return []
+
+  const scored = articles
+    .map((article) => ({
+      article,
+      score: topicScores[article.topicId] || 0,
+    }))
+    .filter((item) => item.score > 0)
+
+  // Score descending, tie-breaker by newest
+  scored.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score
+    return (
+      new Date(b.article.createdAt).getTime() -
+      new Date(a.article.createdAt).getTime()
+    )
+  })
+
+  return scored.slice(0, limit).map((item) => item.article)
 }
 
 /**
