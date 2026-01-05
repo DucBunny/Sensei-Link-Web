@@ -25,14 +25,14 @@ export const LoginForm = () => {
         return
       }
 
-      toast.success(`ようこそ、${user.name}さん！`)
+      toast.success(`ようこそ、${user.name}先生！`)
       navigate({ to: '/' })
       form.reset()
     },
   })
 
   return (
-    <div className="rounded-3xl border-2 border-gray-900 bg-white px-12 py-8 shadow-sm">
+    <div className="rounded-3xl border-2 border-gray-900 bg-white px-12 py-8 shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <form
         onSubmit={(e) => {
           e.preventDefault()

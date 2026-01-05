@@ -6,12 +6,16 @@ interface TopicTagProps {
   className?: string
 }
 
-export function TopicTag({ topic, variant = 'outline', className }: TopicTagProps) {
+export function TopicTag({
+  topic,
+  variant = 'outline',
+  className,
+}: TopicTagProps) {
   const isSelected = variant === 'default'
-  
+
   return (
     <span
-      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium transition-all ${
+      className={`inline-flex cursor-pointer items-center rounded-full px-3 py-1 text-xs font-medium transition-all ${
         className || ''
       }`}
       style={
@@ -28,10 +32,8 @@ export function TopicTag({ topic, variant = 'outline', className }: TopicTagProp
                 border: `1px solid ${topic.color}`,
               }
           : undefined
-      }
-    >
+      }>
       {topic.nameJa}
     </span>
   )
 }
-

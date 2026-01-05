@@ -1,26 +1,28 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { TopicFilter } from '@/features/topics/components/TopicFilter'
 import { ArticleList } from '@/features/articles/components/ArticleList'
 import { CreateArticleDialog } from '@/features/articles/components/CreateArticleDialog'
 import { getAllArticles } from '@/api/articles'
+import { getCurrentUser } from '@/api'
 
 export function HomePage() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedTopicIds, setSelectedTopicIds] = useState<string[]>([])
+  const [selectedTopicIds, setSelectedTopicIds] = useState<Array<string>>([])
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
+  const user = getCurrentUser()
 
   // Listen for article interaction changes to refresh list
   useEffect(() => {
     const handleInteractionChange = () => {
       setRefreshKey((prev) => prev + 1)
     }
-    
+
     window.addEventListener('articleInteraction', handleInteractionChange)
-    
+
     return () => {
       window.removeEventListener('articleInteraction', handleInteractionChange)
     }
@@ -38,11 +40,12 @@ export function HomePage() {
     <AppLayout
       searchQuery={searchQuery}
       onSearchChange={setSearchQuery}
-      onCreateArticle={() => setIsCreateDialogOpen(true)}
-    >
+      onCreateArticle={() => setIsCreateDialogOpen(true)}>
       <div className="container mx-auto">
         <div className="mb-8">
-          <h1 className="mb-2 text-3xl font-bold">センセイリンクへようこそ</h1>
+          <h1 className="mb-2 text-3xl font-bold">
+            センセイリンクへようこそ{user ? `, ${user.name}先生` : ''}
+          </h1>
           <p className="text-muted-foreground">
             教育の知見を発見し、同僚の教師と共有しましょう
           </p>
@@ -65,4 +68,3 @@ export function HomePage() {
     </AppLayout>
   )
 }
-

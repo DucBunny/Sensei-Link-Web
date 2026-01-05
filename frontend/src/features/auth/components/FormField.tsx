@@ -23,7 +23,6 @@ export const FormField = ({
 }: FormInputProps) => {
   const [showPassword, setShowPassword] = useState(false)
 
-  // Xác định logic hiển thị: nếu là password field và đang bật show -> text, ngược lại giữ nguyên type
   const isPasswordField = type === 'password'
   const inputType = isPasswordField
     ? showPassword
@@ -35,7 +34,7 @@ export const FormField = ({
     <div className={cn('grid grid-cols-3 gap-4', className)}>
       <label
         htmlFor={field.name}
-        className="col-span-1 flex h-9 items-center text-sm text-gray-800">
+        className="col-span-1 flex h-9 items-center text-sm text-gray-800 dark:text-gray-200">
         {label}
         <span className="text-red-500">*</span>
       </label>
@@ -48,18 +47,16 @@ export const FormField = ({
           onChange={(e) => field.handleChange(e.target.value)}
           type={inputType}
           placeholder={placeholder}
-          className="rounded-full border-gray-400"
+          className="rounded-full border-gray-400 dark:bg-gray-700 dark:text-gray-200"
         />
 
-        {/* Nút toggle ẩn/hiện password */}
         {isPasswordField && (
           <Button
             type="button"
             variant="icon"
             onClick={() => setShowPassword(!showPassword)}
             className="absolute top-0 right-0"
-            tabIndex={-1} // Tránh focus vào nút này khi tab qua input
-          >
+            tabIndex={-1}>
             {showPassword ? (
               <EyeOff className="size-4" />
             ) : (

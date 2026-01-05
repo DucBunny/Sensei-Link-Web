@@ -7,7 +7,7 @@ import type { ConnectionSession } from '@/features/sessions/types/session'
 /**
  * Mock Topics
  */
-export const MOCK_TOPICS: Topic[] = [
+export const MOCK_TOPICS: Array<Topic> = [
   {
     id: '1',
     name: 'Classroom Management',
@@ -53,26 +53,26 @@ export const MOCK_TOPICS: Topic[] = [
 ]
 
 /**
- * Mock Users
+ * Mock Users Accounts & Users
  */
 export const MOCK_USER_ACCOUNTS: Array<UserAccount> = [
   {
     id: 'user-1',
-    name: 'Tanaka Sensei',
+    name: '田中',
     email: 'tanaka@example.com',
     password: '123456',
     createdAt: new Date('2024-01-15').toISOString(),
   },
   {
     id: 'user-2',
-    name: 'Suzuki Sensei',
+    name: '鈴木',
     email: 'suzuki@example.com',
     password: '123456',
     createdAt: new Date('2024-02-20').toISOString(),
   },
   {
     id: 'user-3',
-    name: 'Yamada Sensei',
+    name: '山田',
     email: 'yamada@example.com',
     password: '123456',
     createdAt: new Date('2024-03-10').toISOString(),
@@ -86,7 +86,7 @@ export const MOCK_USERS: Array<User> = MOCK_USER_ACCOUNTS.map(
 /**
  * Mock Articles
  */
-export const MOCK_ARTICLES: Article[] = [
+export const MOCK_ARTICLES: Array<Article> = [
   {
     id: 'article-1',
     title: '初回授業の簡単なアイスブレイカー',
@@ -188,7 +188,7 @@ export const MOCK_ARTICLES: Article[] = [
 /**
  * Mock Interactions
  */
-export const MOCK_INTERACTIONS: Interaction[] = [
+export const MOCK_INTERACTIONS: Array<Interaction> = [
   {
     id: 'interaction-1',
     articleId: 'article-1',
@@ -266,4 +266,4 @@ export const MOCK_INTERACTIONS: Interaction[] = [
 /**
  * Mock Sessions (empty initially, will be created when articles reach threshold)
  */
-export const MOCK_SESSIONS: ConnectionSession[] = []
+export const MOCK_SESSIONS: Array<ConnectionSession> = []

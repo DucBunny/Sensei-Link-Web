@@ -1,12 +1,12 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
+import { Send } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { addInteraction } from '@/api/interactions'
 import { getCurrentUser, saveArticle } from '@/api/users'
-import { toast } from 'sonner'
-import { Send } from 'lucide-react'
 
 interface CommentFormProps {
   articleId: string
@@ -20,9 +20,14 @@ export function CommentForm({ articleId, onCommentAdded }: CommentFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!content.trim()) {
       toast.error('コメントを入力してください')
+      return
+    }
+
+    if (!currentUser) {
+      toast.error('コメントするにはログインが必要です')
       return
     }
 
@@ -34,13 +39,13 @@ export function CommentForm({ articleId, onCommentAdded }: CommentFormProps) {
         type: 'comment',
         content: content.trim(),
       })
-      
+
       // Auto-save article when commenting
       saveArticle(articleId)
-      
+
       // Dispatch custom event to notify parent components
       window.dispatchEvent(new CustomEvent('articleInteraction'))
-      
+
       setContent('')
       toast.success('コメントを追加しました')
       onCommentAdded?.()
@@ -70,4 +75,3 @@ export function CommentForm({ articleId, onCommentAdded }: CommentFormProps) {
     </form>
   )
 }
-

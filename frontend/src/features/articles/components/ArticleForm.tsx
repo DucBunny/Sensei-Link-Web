@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { TopicSelector } from '@/features/topics/components/TopicSelector'
 import { createArticle } from '@/api/articles'
 import { getCurrentUser } from '@/api/users'
-import { toast } from 'sonner'
 
 interface ArticleFormProps {
   onSuccess?: () => void
@@ -37,6 +37,11 @@ export function ArticleForm({ onSuccess, onCancel }: ArticleFormProps) {
 
     setIsLoading(true)
     try {
+      if (!currentUser) {
+        toast.error('記事を作成するにはログインが必要です')
+        return
+      }
+
       await createArticle({
         title: title.trim(),
         content: content.trim(),
@@ -45,13 +50,13 @@ export function ArticleForm({ onSuccess, onCancel }: ArticleFormProps) {
         authorId: currentUser.id,
       })
       toast.success('記事を作成しました')
-      
+
       // Reset form
       setTitle('')
       setContent('')
       setSummary('')
       setTopicId('')
-      
+
       onSuccess?.()
     } catch (error) {
       toast.error('エラーが発生しました')
@@ -95,7 +100,7 @@ export function ArticleForm({ onSuccess, onCancel }: ArticleFormProps) {
           rows={2}
           maxLength={200}
         />
-        <p className="mt-1 text-xs text-muted-foreground">
+        <p className="text-muted-foreground mt-1 text-xs">
           {summary.length}/200文字
         </p>
       </div>
@@ -112,7 +117,7 @@ export function ArticleForm({ onSuccess, onCancel }: ArticleFormProps) {
           rows={6}
           required
         />
-        <p className="mt-1 text-xs text-muted-foreground">
+        <p className="text-muted-foreground mt-1 text-xs">
           {content.length}文字
         </p>
       </div>
@@ -130,4 +135,3 @@ export function ArticleForm({ onSuccess, onCancel }: ArticleFormProps) {
     </form>
   )
 }
-

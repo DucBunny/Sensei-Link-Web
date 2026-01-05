@@ -1,7 +1,17 @@
-import { memo } from 'react'
+import { memo, useState } from 'react'
 import { useTheme } from 'next-themes'
-import { BookOpen, Heart, Moon, Sun, User, Users } from 'lucide-react'
+import {
+  BookOpen,
+  Heart,
+  LogIn,
+  LogOut,
+  Moon,
+  Sun,
+  User,
+  Users,
+} from 'lucide-react'
 import { Link } from '@tanstack/react-router'
+import { clearCurrentUser, getCurrentUser } from '@/api'
 import {
   Sidebar,
   SidebarContent,
@@ -17,13 +27,20 @@ import {
 } from '@/components/ui/sidebar'
 
 const menuItems = [
-  { title: 'ホーム', icon: BookOpen, href: '/' },
-  { title: '保存した記事', icon: Heart, href: '/saved' },
-  { title: 'セッション', icon: Users, href: '/sessions' },
+  { title: 'ホーム', icon: BookOpen, href: '/', isPublic: true },
+  { title: '保存した記事', icon: Heart, href: '/saved', isPublic: false },
+  { title: 'セッション', icon: Users, href: '/sessions', isPublic: false },
 ]
 
 export const AppSidebar = memo(() => {
   const { theme, setTheme } = useTheme()
+  const [user, setUser] = useState(() => getCurrentUser())
+
+  const logOut = () => {
+    clearCurrentUser()
+    setUser(null)
+    window.location.reload()
+  }
 
   return (
     <Sidebar collapsible="icon">
@@ -52,6 +69,9 @@ export const AppSidebar = memo(() => {
             <SidebarMenu>
               {menuItems.map((item) => {
                 const Icon = item.icon
+                if (!item.isPublic && !user) {
+                  return null
+                }
                 return (
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton asChild>
@@ -72,6 +92,7 @@ export const AppSidebar = memo(() => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
+              className="cursor-pointer"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
               {theme === 'dark' ? <Sun /> : <Moon />}
               <span>{theme === 'dark' ? 'ライトモード' : 'ダークモード'}</span>
@@ -79,10 +100,28 @@ export const AppSidebar = memo(() => {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <a href="#profile">
-                <User />
-                <span>プロフィール</span>
-              </a>
+              {user ? (
+                <a href="#profile">
+                  <User />
+                  <span>プロフィール</span>
+                </a>
+              ) : (
+                <Link to="/login">
+                  <LogIn />
+                  <span>ログイン</span>
+                </Link>
+              )}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              hidden={!user}
+              onClick={() => {
+                logOut()
+              }}
+              className="cursor-pointer">
+              <LogOut />
+              <span>ログアウト</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
