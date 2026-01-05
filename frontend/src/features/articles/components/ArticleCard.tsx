@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { Bookmark, Clock, MessageCircle, Users } from 'lucide-react'
+import { Bookmark, Clock, MessageCircle, UserPen, Users } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { toast } from 'sonner'
@@ -16,7 +16,7 @@ import {
   isArticleUsefulForUser,
   removeInteraction,
 } from '@/api/interactions'
-import { getSessionsByArticle, hasSessionForArticle } from '@/api/sessions'
+import { hasSessionForArticle } from '@/api/sessions'
 import {
   getCurrentUser,
   getUserById,
@@ -32,6 +32,7 @@ interface ArticleCardProps {
 
 export function ArticleCard({ article, onSessionClick }: ArticleCardProps) {
   const currentUser = getCurrentUser()
+  const author = getUserById(article.authorId)
   const [usefulCount, setUsefulCount] = useState(getUsefulCount(article.id))
   const [isUseful, setIsUseful] = useState(false)
   const [isOwner, setIsOwner] = useState(false)
@@ -188,6 +189,14 @@ export function ArticleCard({ article, onSessionClick }: ArticleCardProps) {
 
         {/* Footer: Stats */}
         <div className="text-muted-foreground flex items-center gap-4 text-sm">
+          <div className="flex items-center gap-1.5">
+            <UserPen className="h-4 w-4" />
+            <span>
+              {author?.id === currentUser?.id
+                ? 'あなた'
+                : `${author?.name}先生`}
+            </span>
+          </div>
           <div className="flex items-center gap-1.5">
             <Clock className="h-4 w-4" />
             <span>{article.readTime}分</span>

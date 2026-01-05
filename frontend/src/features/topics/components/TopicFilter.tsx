@@ -24,7 +24,7 @@ export function TopicFilter({
 
   return (
     <div className="space-y-4">
-      <h3 className="text-sm font-semibold">トピックで絞り込む</h3>
+      <h2 className="text-xl font-semibold">トピックで絞り込む</h2>
       <div className="flex flex-wrap gap-2">
         {topics.map((topic) => {
           const isSelected = selectedTopicIds.includes(topic.id)

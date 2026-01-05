@@ -8,6 +8,10 @@ import { Button } from '@/components/ui/button'
 
 export function SessionsPage() {
   const currentUser = getCurrentUser()
+  if (!currentUser) {
+    return
+  }
+
   const allSessions = getAllSessions()
   const joinedSessions = allSessions.filter(
     (s) =>
@@ -30,7 +34,7 @@ export function SessionsPage() {
         </p>
 
         {selectedSession ? (
-          <div className="mb-8 rounded-lg border p-8">
+          <div className="mb-8 rounded-lg border bg-white p-8">
             <div className="mb-6">
               <h2 className="text-2xl font-bold">セッション詳細</h2>
             </div>
@@ -98,7 +102,7 @@ export function SessionsPage() {
             </Button>
           </div>
         ) : (
-          <div className="rounded-lg border p-8">
+          <div className="rounded-lg border bg-white p-8">
             {joinedSessions.length === 0 ? (
               <div className="text-muted-foreground text-center">
                 参加中のセッションはありません
