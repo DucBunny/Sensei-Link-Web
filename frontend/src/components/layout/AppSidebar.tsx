@@ -1,8 +1,7 @@
-'use client'
-
 import { memo } from 'react'
 import { useTheme } from 'next-themes'
-import { BookOpen, Heart, Users, Moon, Sun, User } from 'lucide-react'
+import { BookOpen, Heart, Moon, Sun, User, Users } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 import {
   Sidebar,
   SidebarContent,
@@ -16,7 +15,6 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar'
-import { Link } from '@tanstack/react-router'
 
 const menuItems = [
   { title: 'ホーム', icon: BookOpen, href: '/' },
@@ -74,8 +72,7 @@ export const AppSidebar = memo(() => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            >
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
               {theme === 'dark' ? <Sun /> : <Moon />}
               <span>{theme === 'dark' ? 'ライトモード' : 'ダークモード'}</span>
             </SidebarMenuButton>
@@ -94,6 +91,3 @@ export const AppSidebar = memo(() => {
     </Sidebar>
   )
 })
-
-AppSidebar.displayName = 'AppSidebar'
-

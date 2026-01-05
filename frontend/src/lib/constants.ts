@@ -20,4 +20,3 @@ export const SESSION_MIN_PARTICIPANTS = 5
  * Default read time (minutes) for articles
  */
 export const DEFAULT_READ_TIME = 2
-

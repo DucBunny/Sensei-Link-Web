@@ -9,4 +9,3 @@ export interface Topic {
   icon?: string
   color?: string
 }
-

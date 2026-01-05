@@ -1,3 +1,6 @@
+// Import STORAGE_KEYS
+import { STORAGE_KEYS } from './constants'
+
 /**
  * Get item from localStorage with type safety
  */
@@ -65,7 +68,3 @@ export function clearAllStorage(): void {
     localStorage.removeItem(key)
   })
 }
-
-// Import STORAGE_KEYS
-import { STORAGE_KEYS } from './constants'
-
