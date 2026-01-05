@@ -16,7 +16,7 @@ import {
   isArticleUsefulForUser,
   removeInteraction,
 } from '@/api/interactions'
-import { hasSessionForArticle } from '@/api/sessions'
+import { getSessionsByArticle, hasSessionForArticle } from '@/api/sessions'
 import {
   getCurrentUser,
   getUserById,
@@ -52,6 +52,13 @@ export function ArticleCard({ article, onSessionClick }: ArticleCardProps) {
   // Session manage
   const canJoinSession = usefulCount >= 20
   const hasSession = hasSessionForArticle(article.id)
+
+  // Check user joined session
+  const session = getSessionsByArticle(article.id)
+  let hasJoinedSession = false
+  if (currentUser) {
+    hasJoinedSession = session?.participantIds.includes(currentUser.id) || false
+  }
 
   // Calculate time ago
   const timeAgo = formatDistanceToNow(new Date(article.createdAt), {
@@ -158,7 +165,9 @@ export function ArticleCard({ article, onSessionClick }: ArticleCardProps) {
                   ? hasSession
                     ? 'セッション詳細'
                     : 'セッション作成'
-                  : 'セッション参加'}
+                  : hasJoinedSession
+                    ? 'セッション詳細'
+                    : 'セッション参加'}
               </Button>
             )}
 

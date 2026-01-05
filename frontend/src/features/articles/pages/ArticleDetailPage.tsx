@@ -13,11 +13,27 @@ import { InteractionStats } from '@/features/interactions/components/Interaction
 import { CommentForm } from '@/features/interactions/components/CommentForm'
 import { CommentList } from '@/features/interactions/components/CommentList'
 import { Button } from '@/components/ui/button'
+import { getUsefulCount } from '@/api/interactions'
+import { getSessionsByArticle, hasSessionForArticle } from '@/api/sessions'
+import { getCurrentUser } from '@/api/users'
+import { CreateSessionDialog } from '@/features/sessions/components/CreateSessionDialog'
+import { JoinSessionDialog } from '@/features/sessions/components/JoinSessionDialog'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 
 export function ArticleDetailPage() {
   const { articleId } = useParams({ strict: false })
   const article = getArticleById(articleId as string)
   const [refreshKey, setRefreshKey] = useState(0)
+  const [openSession, setOpenSession] = useState(false)
+  const [openJoin, setOpenJoin] = useState(false)
+
+  const currentUser = getCurrentUser()
+  const usefulCount = getUsefulCount(article.id)
+  const session = getSessionsByArticle(article.id)
+  const hasSession = !!session
+  const isHost = session && session.hostId === currentUser.id
+  const canJoinSession = usefulCount >= 20
+  const isJoined = session && session.participantIds.includes(currentUser.id)
 
   if (!article) {
     return (
@@ -72,6 +88,35 @@ export function ArticleDetailPage() {
               onUpdate={handleInteractionUpdate}
             />
           </div>
+          {/* Session Button Logic */}
+          {canJoinSession && (
+            <div className="mt-2 flex gap-2">
+              {/* Nếu là host */}
+              {isHost ? (
+                <Button variant="outline" size="sm" disabled>
+                  あなたはこのセッションのホストです
+                </Button>
+              ) : hasSession ? (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setOpenJoin(true)}>
+                    {isJoined ? 'セッション詳細・退出' : 'セッション参加'}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setOpenSession(true)}>
+                    セッション作成
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Content */}
@@ -101,6 +146,24 @@ export function ArticleDetailPage() {
             <CommentList key={refreshKey} articleId={article.id} />
           </div>
         </div>
+
+        <Dialog open={openJoin} onOpenChange={setOpenJoin}>
+          <DialogContent>
+            <JoinSessionDialog
+              session={session}
+              currentUserId={currentUser.id}
+            />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={openSession} onOpenChange={setOpenSession}>
+          <DialogContent>
+            <CreateSessionDialog
+              article={article}
+              setOpenSession={setOpenSession}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
     </AppLayout>
   )

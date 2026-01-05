@@ -2,11 +2,18 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import { BookOpen, MessageCircle, Users } from 'lucide-react'
+import type { ConnectionSession } from '@/features/sessions'
+import type { Article } from '../types/article'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { ArticleList } from '@/features/articles/components/ArticleList'
 import { getAllArticles } from '@/api/articles'
 import { getCurrentUser, getSavedArticles } from '@/api/users'
 import { getUserInteractions } from '@/api/interactions'
+
+import { getSessionsByArticle, hasSessionForArticle } from '@/api'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { CreateSessionDialog } from '@/features/sessions/components/CreateSessionDialog'
+import { JoinSessionDialog } from '@/features/sessions/components/JoinSessionDialog'
 
 export function SavedArticlesPage() {
   const currentUser = getCurrentUser()
@@ -22,6 +29,23 @@ export function SavedArticlesPage() {
     () => getUserInteractions(currentUser.id),
     [currentUser.id, refreshKey],
   )
+
+  // Session: open modal create/detail session
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
+  const [openSession, setOpenSession] = useState(false)
+  // Handle click to session on article card
+  const hasSession = hasSessionForArticle(selectedArticle?.id as string)
+  const [activeSession, setActiveSession] = useState<ConnectionSession | null>(
+    null,
+  )
+
+  const handleSessionClick = (article: Article) => {
+    const session = getSessionsByArticle(article.id)
+
+    setSelectedArticle(article)
+    setActiveSession(session)
+    setOpenSession(true)
+  }
 
   // Listen for storage changes to update stats
   useEffect(() => {
@@ -102,8 +126,29 @@ export function SavedArticlesPage() {
         <ArticleList
           articles={savedArticles}
           emptyMessage="保存した記事がありません"
-          onSessionClick={() => {}}
+          onSessionClick={handleSessionClick}
         />
+
+        <Dialog open={openSession} onOpenChange={setOpenSession}>
+          <DialogContent>
+            {selectedArticle &&
+              (currentUser.id === selectedArticle.authorId && !hasSession ? (
+                <CreateSessionDialog
+                  article={selectedArticle}
+                  setOpenSession={setOpenSession}
+                />
+              ) : activeSession ? (
+                <JoinSessionDialog
+                  session={activeSession}
+                  currentUserId={currentUser.id}
+                />
+              ) : (
+                <p className="text-muted-foreground text-sm">
+                  セッションがまだ作成されていません
+                </p>
+              ))}
+          </DialogContent>
+        </Dialog>
       </div>
     </AppLayout>
   )

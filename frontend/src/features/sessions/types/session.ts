@@ -18,6 +18,13 @@ export interface ConnectionSession {
   goal: string // Mục tiêu giao lưu
   status: SessionStatus
   participantIds: Array<string>
+  participantInfoMap?: Record<
+    string,
+    {
+      email: string
+      note: string
+    }
+  >
   minParticipants: number
   createdAt: string // ISO date string
   expiresAt?: string // ISO date string

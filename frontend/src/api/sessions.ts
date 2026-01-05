@@ -33,9 +33,11 @@ export function getSessionById(id: string): ConnectionSession | null {
 /**
  * Get sessions for a specific article
  */
-export function getSessionsByArticle(articleId: string): ConnectionSession {
+export function getSessionsByArticle(
+  articleId: string,
+): ConnectionSession | null {
   const sessions = getAllSessions()
-  return sessions.filter((session) => session.articleId === articleId)[0]
+  return sessions.find((session) => session.articleId === articleId) || null
 }
 
 /**
@@ -82,7 +84,11 @@ export function createSession(data: CreateSessionInput): ConnectionSession {
 /**
  * Join a session
  */
-export function joinSession(sessionId: string, userId: string): boolean {
+export function joinSession(
+  sessionId: string,
+  userId: string,
+  participantInfo?: { email: string; note: string },
+): boolean {
   const sessions = getAllSessions()
   const sessionIndex = sessions.findIndex((s) => s.id === sessionId)
 
@@ -97,10 +103,14 @@ export function joinSession(sessionId: string, userId: string): boolean {
     return true // Already joined
   }
 
-  // Add user to participants
+  // Add user to participants and info
   const updatedSession: ConnectionSession = {
     ...session,
     participantIds: [...session.participantIds, userId],
+    participantInfoMap: {
+      ...(session.participantInfoMap || {}),
+      ...(participantInfo ? { [userId]: participantInfo } : {}),
+    },
     status:
       session.participantIds.length + 1 >= session.minParticipants
         ? 'connecting'

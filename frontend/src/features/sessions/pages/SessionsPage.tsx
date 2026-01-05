@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { AppLayout } from '@/components/layout/AppLayout'
 
-import { getAllSessions } from '@/api/sessions'
+import { getAllSessions, leaveSession } from '@/api/sessions'
 import { getCurrentUser } from '@/api/users'
 import { MOCK_USERS } from '@/lib/mockData'
 import { Button } from '@/components/ui/button'
@@ -13,17 +13,39 @@ export function SessionsPage() {
   }
 
   const allSessions = getAllSessions()
-  const joinedSessions = allSessions.filter(
-    (s) =>
-      s.participantIds.includes(currentUser.id) || s.hostId === currentUser.id,
-  )
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
     null,
   )
+  const [sessions, setSessions] = useState(allSessions)
+  const joinedSessions = sessions.filter(
+    (s) =>
+      s.participantIds.includes(currentUser.id) || s.hostId === currentUser.id,
+  )
   const selectedSession =
     joinedSessions.find((s) => s.id === selectedSessionId) || null
-
   const hostUser = MOCK_USERS.find((u) => u.id === selectedSession?.hostId)
+
+  const handleLeaveSession = () => {
+    if (!selectedSession) return
+    const success = leaveSession(selectedSession.id, currentUser.id)
+    if (success) {
+      // Cập nhật lại danh sách session
+      const updatedSessions = sessions.map((s) =>
+        s.id === selectedSession.id
+          ? {
+              ...s,
+              participantIds: s.participantIds.filter(
+                (id) => id !== currentUser.id,
+              ),
+            }
+          : s,
+      )
+      setSessions(updatedSessions)
+      setSelectedSessionId(null)
+    } else {
+      alert('セッションから退出できませんでした')
+    }
+  }
 
   return (
     <AppLayout breadcrumbs={[{ label: 'セッション' }]}>
@@ -76,6 +98,7 @@ export function SessionsPage() {
                 <ul className="mt-2 ml-4 list-disc">
                   {selectedSession.participantIds.map((uid) => {
                     const user = MOCK_USERS.find((u) => u.id === uid)
+                    const info = selectedSession.participantInfoMap?.[uid]
                     return (
                       <li key={uid} className="mb-1">
                         <div className="flex items-center gap-2">
@@ -87,6 +110,12 @@ export function SessionsPage() {
                             />
                           )}
                           <span>{user?.name || uid}</span>
+                          {info && (
+                            <div className="text-muted-foreground ml-2 text-xs">
+                              <div>{info.note}</div>
+                              <div>{info.email}</div>
+                            </div>
+                          )}
                         </div>
                       </li>
                     )
@@ -94,12 +123,20 @@ export function SessionsPage() {
                 </ul>
               </div>
             </div>
-            <Button
-              className="mt-6"
-              variant="outline"
-              onClick={() => setSelectedSessionId(null)}>
-              戻る
-            </Button>
+            <div className="mt-6 flex gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setSelectedSessionId(null)}>
+                戻る
+              </Button>
+              {/* Nút rời session, chỉ hiện nếu không phải host và đã tham gia */}
+              {selectedSession.hostId !== currentUser.id &&
+                selectedSession.participantIds.includes(currentUser.id) && (
+                  <Button variant="destructive" onClick={handleLeaveSession}>
+                    セッションから退出する
+                  </Button>
+                )}
+            </div>
           </div>
         ) : (
           <div className="rounded-lg border bg-white p-8">
