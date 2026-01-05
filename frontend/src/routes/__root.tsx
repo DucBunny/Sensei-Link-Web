@@ -12,7 +12,7 @@ export const Route = createRootRoute({
   component: () => (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <Outlet />
-      <Toaster position="top-right" richColors />
+      <Toaster position="top-center" richColors />
     </ThemeProvider>
   ),
 })
