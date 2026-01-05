@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Bookmark, Clock, MessageCircle, Users } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
@@ -17,7 +17,12 @@ import {
   removeInteraction,
 } from '@/api/interactions'
 import { getSessionsByArticle, hasSessionForArticle } from '@/api/sessions'
-import { getCurrentUser, saveArticle, unsaveArticle } from '@/api/users'
+import {
+  getCurrentUser,
+  getUserById,
+  saveArticle,
+  unsaveArticle,
+} from '@/api/users'
 import { Button } from '@/components/ui/button'
 
 interface ArticleCardProps {
@@ -27,15 +32,23 @@ interface ArticleCardProps {
 
 export function ArticleCard({ article, onSessionClick }: ArticleCardProps) {
   const currentUser = getCurrentUser()
-  const author = getUserById(article.authorId)
   const [usefulCount, setUsefulCount] = useState(getUsefulCount(article.id))
-  const [isUseful, setIsUseful] = useState(
-    isArticleUsefulForUser(article.id, currentUser.id),
-  )
+  const [isUseful, setIsUseful] = useState(false)
+  const [isOwner, setIsOwner] = useState(false)
+  useEffect(() => {
+    if (!currentUser) {
+      setIsUseful(false)
+      return
+    }
+
+    setIsUseful(isArticleUsefulForUser(article.id, currentUser.id))
+
+    setIsOwner(currentUser.id === article.authorId)
+  }, [article.id, currentUser])
+
   const commentCount = getCommentCount(article.id)
 
   // Session manage
-  const isOwner = currentUser.id === article.authorId
   const canJoinSession = usefulCount >= 20
   const hasSession = hasSessionForArticle(article.id)
 
@@ -132,6 +145,12 @@ export function ArticleCard({ article, onSessionClick }: ArticleCardProps) {
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
+
+                  if (!currentUser) {
+                    toast.warning('ログインしてください')
+                    return
+                  }
+
                   onSessionClick(article)
                 }}>
                 {isOwner

@@ -68,7 +68,8 @@ export function HomePage() {
       <div className="container mx-auto">
         <div className="mb-8">
           <h1 className="mb-2 text-3xl font-bold">
-            センセイリンクへようこそ{user ? `, ${user.name}先生` : ''}
+            センセイリンクへようこそ
+            {currentUser ? `, ${currentUser.name}先生` : ''}
           </h1>
           <p className="text-muted-foreground">
             教育の知見を発見し、同僚の教師と共有しましょう
@@ -91,7 +92,8 @@ export function HomePage() {
 
         <Dialog open={openSession} onOpenChange={setOpenSession}>
           <DialogContent>
-            {selectedArticle &&
+            {currentUser &&
+              selectedArticle &&
               (currentUser.id === selectedArticle.authorId && !hasSession ? (
                 <CreateSessionDialog
                   article={selectedArticle}

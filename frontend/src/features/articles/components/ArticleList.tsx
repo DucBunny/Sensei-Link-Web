@@ -1,11 +1,9 @@
 'use client'
 
 import { ArticleCard } from './ArticleCard'
-import { ArticleCard } from './ArticleCard'
 import type { Article } from '../types/article'
 
 interface ArticleListProps {
-  articles: Array<Article>
   articles: Array<Article>
   emptyMessage?: string
   onSessionClick: (article: Article) => void
