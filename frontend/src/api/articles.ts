@@ -1,19 +1,23 @@
-import { getStorageItem, setStorageItem } from '@/lib/localStorage'
-import { STORAGE_KEYS } from '@/lib/constants'
-import type { Article, CreateArticleInput, UpdateArticleInput } from '@/features/articles/types/article'
-import { MOCK_ARTICLES } from '@/lib/mockData'
 import { getAllTopics } from './topics'
 import { getCurrentUser } from './users'
+import type {
+  Article,
+  CreateArticleInput,
+  UpdateArticleInput,
+} from '@/features/articles/types/article'
+import { getStorageItem, setStorageItem } from '@/lib/localStorage'
+import { STORAGE_KEYS } from '@/lib/constants'
+import { MOCK_ARTICLES } from '@/lib/mockData'
 
 /**
  * Get all articles with optional filters
  */
 export function getAllArticles(filters?: {
-  topicIds?: string[]
+  topicIds?: Array<string>
   search?: string
   sortBy?: 'newest' | 'popular' | 'trending'
-}): Article[] {
-  let articles = getStorageItem<Article[]>(STORAGE_KEYS.ARTICLES) || []
+}): Array<Article> {
+  let articles = getStorageItem<Array<Article>>(STORAGE_KEYS.ARTICLES) || []
 
   // If no articles in storage, return mock data
   if (articles.length === 0) {
@@ -22,7 +26,9 @@ export function getAllArticles(filters?: {
 
   // Apply filters
   if (filters?.topicIds && filters.topicIds.length > 0) {
-    articles = articles.filter((article) => filters.topicIds!.includes(article.topicId))
+    articles = articles.filter((article) =>
+      filters.topicIds!.includes(article.topicId),
+    )
   }
 
   if (filters?.search) {
@@ -37,15 +43,24 @@ export function getAllArticles(filters?: {
 
   // Apply sorting
   if (filters?.sortBy === 'newest') {
-    articles = [...articles].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    articles = [...articles].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
   } else if (filters?.sortBy === 'popular') {
     // Sort by useful count (would need to calculate from interactions)
     // For now, just sort by newest
-    articles = [...articles].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    articles = [...articles].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
   } else if (filters?.sortBy === 'trending') {
     // Sort by recent interactions (would need to calculate from interactions)
     // For now, just sort by newest
-    articles = [...articles].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    articles = [...articles].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
   }
 
   // Enrich with topic and author data
@@ -100,7 +115,10 @@ export function createArticle(data: CreateArticleInput): Article {
 /**
  * Update an article
  */
-export function updateArticle(id: string, updates: UpdateArticleInput): Article | null {
+export function updateArticle(
+  id: string,
+  updates: UpdateArticleInput,
+): Article | null {
   const articles = getAllArticles()
   const articleIndex = articles.findIndex((a) => a.id === id)
 
@@ -140,9 +158,8 @@ export function deleteArticle(id: string): boolean {
  * Initialize articles (load mock data if empty)
  */
 export function initializeArticles(): void {
-  const existing = getStorageItem<Article[]>(STORAGE_KEYS.ARTICLES)
+  const existing = getStorageItem<Array<Article>>(STORAGE_KEYS.ARTICLES)
   if (!existing || existing.length === 0) {
     setStorageItem(STORAGE_KEYS.ARTICLES, MOCK_ARTICLES)
   }
 }
-

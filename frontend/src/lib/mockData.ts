@@ -682,6 +682,12 @@ export const MOCK_SESSIONS: Array<ConnectionSession> = [
     goal: '知見共有・理解深化',
     status: 'open',
     participantIds: ['user-22'],
+    participantInfoMap: {
+      'user-22': {
+        email: 'maeda123@example.com',
+        note: '記事の内容に非常に興味があります。',
+      },
+    },
     minParticipants: 3,
     createdAt: new Date().toISOString(),
     expiresAt: new Date(

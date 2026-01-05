@@ -16,7 +16,7 @@ export const CreateSessionDialog = ({
   article: Article
   setOpenSession: (open: boolean) => void
 }) => {
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState(article.title || '')
   const [description, setDescription] = useState('')
   const [goal, setGoal] = useState('')
   const [minParticipants, setMinParticipants] = useState<number>(3)

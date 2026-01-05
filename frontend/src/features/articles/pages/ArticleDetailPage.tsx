@@ -1,7 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { useParams, Link } from '@tanstack/react-router'
+import { Link, useParams } from '@tanstack/react-router'
+import { formatDistanceToNow } from 'date-fns'
+import { ja } from 'date-fns/locale'
+import { ArrowLeft, Clock } from 'lucide-react'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { getArticleById } from '@/api/articles'
 import { TopicTag } from '@/features/topics/components/TopicTag'
@@ -9,15 +12,28 @@ import { UsefulButton } from '@/features/interactions/components/UsefulButton'
 import { InteractionStats } from '@/features/interactions/components/InteractionStats'
 import { CommentForm } from '@/features/interactions/components/CommentForm'
 import { CommentList } from '@/features/interactions/components/CommentList'
-import { formatDistanceToNow } from 'date-fns'
-import { ja } from 'date-fns/locale'
-import { Clock, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { getUsefulCount } from '@/api/interactions'
+import { getSessionsByArticle, hasSessionForArticle } from '@/api/sessions'
+import { getCurrentUser } from '@/api/users'
+import { CreateSessionDialog } from '@/features/sessions/components/CreateSessionDialog'
+import { JoinSessionDialog } from '@/features/sessions/components/JoinSessionDialog'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
 
 export function ArticleDetailPage() {
   const { articleId } = useParams({ strict: false })
   const article = getArticleById(articleId as string)
   const [refreshKey, setRefreshKey] = useState(0)
+  const [openSession, setOpenSession] = useState(false)
+  const [openJoin, setOpenJoin] = useState(false)
+
+  const currentUser = getCurrentUser()
+  const usefulCount = getUsefulCount(article.id)
+  const session = getSessionsByArticle(article.id)
+  const hasSession = !!session
+  const isHost = session && session.hostId === currentUser.id
+  const canJoinSession = usefulCount >= 20
+  const isJoined = session && session.participantIds.includes(currentUser.id)
 
   if (!article) {
     return (
@@ -25,8 +41,7 @@ export function ArticleDetailPage() {
         breadcrumbs={[
           { label: 'ホーム', href: '/' },
           { label: '記事が見つかりません' },
-        ]}
-      >
+        ]}>
         <div className="container mx-auto">
           <h1 className="text-2xl font-bold">記事が見つかりません</h1>
         </div>
@@ -45,11 +60,7 @@ export function ArticleDetailPage() {
 
   return (
     <AppLayout
-      breadcrumbs={[
-        { label: 'ホーム', href: '/' },
-        { label: '記事詳細' },
-      ]}
-    >
+      breadcrumbs={[{ label: 'ホーム', href: '/' }, { label: '記事詳細' }]}>
       <div className="container mx-auto">
         {/* Back Button */}
         <div className="mb-6">
@@ -64,40 +75,96 @@ export function ArticleDetailPage() {
         {/* Header */}
         <div className="mb-6">
           <div className="mb-3 flex items-center gap-2">
-            {article.topic && <TopicTag topic={article.topic} variant="outline" />}
-            <span className="text-sm text-muted-foreground">{timeAgo}</span>
+            {article.topic && (
+              <TopicTag topic={article.topic} variant="outline" />
+            )}
+            <span className="text-muted-foreground text-sm">{timeAgo}</span>
           </div>
           <h1 className="mb-4 text-3xl font-bold">{article.title}</h1>
           <div className="mb-4 flex items-center justify-between">
             <InteractionStats articleId={article.id} />
-            <UsefulButton articleId={article.id} onUpdate={handleInteractionUpdate} />
+            <UsefulButton
+              articleId={article.id}
+              onUpdate={handleInteractionUpdate}
+            />
           </div>
+          {/* Session Button Logic */}
+          {canJoinSession && (
+            <div className="mt-2 flex gap-2">
+              {/* Nếu là host */}
+              {isHost ? (
+                <Button variant="outline" size="sm" disabled>
+                  あなたはこのセッションのホストです
+                </Button>
+              ) : hasSession ? (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setOpenJoin(true)}>
+                    {isJoined ? 'セッション詳細・退出' : 'セッション参加'}
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setOpenSession(true)}>
+                    セッション作成
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Content */}
-        <div className="mb-8 rounded-lg border bg-card p-6">
-          <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="bg-card mb-8 rounded-lg border p-6">
+          <div className="text-muted-foreground mb-4 flex items-center gap-2 text-sm">
             <Clock className="h-4 w-4" />
             <span>読了時間: {article.readTime}分</span>
           </div>
-          <p className="mb-4 text-lg font-medium text-foreground">{article.summary}</p>
-          <div className="whitespace-pre-wrap text-foreground leading-relaxed">
+          <p className="text-foreground mb-4 text-lg font-medium">
+            {article.summary}
+          </p>
+          <div className="text-foreground leading-relaxed whitespace-pre-wrap">
             {article.content}
           </div>
         </div>
 
         {/* Interactions */}
         <div className="space-y-6">
-          <div className="rounded-lg border bg-card p-6">
+          <div className="bg-card rounded-lg border p-6">
             <h2 className="mb-4 text-lg font-semibold">コメント</h2>
             <div className="mb-6">
-              <CommentForm articleId={article.id} onCommentAdded={handleInteractionUpdate} />
+              <CommentForm
+                articleId={article.id}
+                onCommentAdded={handleInteractionUpdate}
+              />
             </div>
             <CommentList key={refreshKey} articleId={article.id} />
           </div>
         </div>
+
+        <Dialog open={openJoin} onOpenChange={setOpenJoin}>
+          <DialogContent>
+            <JoinSessionDialog
+              session={session}
+              currentUserId={currentUser.id}
+            />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={openSession} onOpenChange={setOpenSession}>
+          <DialogContent>
+            <CreateSessionDialog
+              article={article}
+              setOpenSession={setOpenSession}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
     </AppLayout>
   )
 }
-
