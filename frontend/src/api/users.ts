@@ -1,6 +1,6 @@
 import { getStorageItem, setStorageItem } from '@/lib/localStorage'
 import { STORAGE_KEYS } from '@/lib/constants'
-import { MOCK_USERS } from '@/lib/mockData'
+import { MOCK_USERS, MOCK_USER_ACCOUNTS } from '@/lib/mockData'
 
 /**
  * User entity
@@ -13,12 +13,16 @@ export interface User {
   createdAt: string // ISO date string
 }
 
+export interface UserAccount extends User {
+  password: string
+}
+
 /**
  * User preferences
  */
 export interface UserPreferences {
-  selectedTopics: string[] // Topic IDs
-  savedArticles: string[] // Article IDs
+  selectedTopics: Array<string> // Topic IDs
+  savedArticles: Array<string> // Article IDs
 }
 
 /**
@@ -26,7 +30,7 @@ export interface UserPreferences {
  */
 export function getCurrentUser(): User {
   const user = getStorageItem<User>(STORAGE_KEYS.CURRENT_USER)
-  
+
   if (user) {
     return user
   }
@@ -48,8 +52,10 @@ export function setCurrentUser(user: User): void {
  * Get user preferences
  */
 export function getUserPreferences(): UserPreferences {
-  const preferences = getStorageItem<UserPreferences>(STORAGE_KEYS.USER_PREFERENCES)
-  
+  const preferences = getStorageItem<UserPreferences>(
+    STORAGE_KEYS.USER_PREFERENCES,
+  )
+
   if (preferences) {
     return preferences
   }
@@ -59,7 +65,7 @@ export function getUserPreferences(): UserPreferences {
     selectedTopics: [],
     savedArticles: [],
   }
-  
+
   setStorageItem(STORAGE_KEYS.USER_PREFERENCES, defaultPreferences)
   return defaultPreferences
 }
@@ -67,7 +73,9 @@ export function getUserPreferences(): UserPreferences {
 /**
  * Update user preferences
  */
-export function updateUserPreferences(preferences: Partial<UserPreferences>): void {
+export function updateUserPreferences(
+  preferences: Partial<UserPreferences>,
+): void {
   const current = getUserPreferences()
   const updated = { ...current, ...preferences }
   setStorageItem(STORAGE_KEYS.USER_PREFERENCES, updated)
@@ -76,9 +84,44 @@ export function updateUserPreferences(preferences: Partial<UserPreferences>): vo
 /**
  * Get saved article IDs
  */
-export function getSavedArticles(): string[] {
+export function getSavedArticles(): Array<string> {
   const preferences = getUserPreferences()
   return preferences.savedArticles
+}
+
+/**
+ * Get all user accounts (with passwords) from storage or mock data
+ */
+export function getAllAccounts(): Array<UserAccount> {
+  const accounts = getStorageItem<Array<UserAccount>>(
+    STORAGE_KEYS.USER_ACCOUNTS,
+  )
+  if (accounts && accounts.length > 0) {
+    return accounts
+  }
+
+  setStorageItem(STORAGE_KEYS.USER_ACCOUNTS, MOCK_USER_ACCOUNTS)
+  return MOCK_USER_ACCOUNTS
+}
+
+/**
+ * Authenticate user by email and password
+ */
+export function authenticateUser(email: string, password: string): User | null {
+  const accounts = getAllAccounts()
+  const account = accounts.find(
+    (item) =>
+      item.email?.toLowerCase() === email.toLowerCase() &&
+      item.password === password,
+  )
+
+  if (!account) {
+    return null
+  }
+
+  const { password: _password, ...user } = account
+  setCurrentUser(user)
+  return user
 }
 
 /**
@@ -86,7 +129,7 @@ export function getSavedArticles(): string[] {
  */
 export function saveArticle(articleId: string): void {
   const preferences = getUserPreferences()
-  
+
   if (!preferences.savedArticles.includes(articleId)) {
     updateUserPreferences({
       savedArticles: [...preferences.savedArticles, articleId],
@@ -120,12 +163,21 @@ export function initializeUsers(): void {
   if (!existing) {
     setStorageItem(STORAGE_KEYS.CURRENT_USER, MOCK_USERS[0])
   }
-  
-  const existingPreferences = getStorageItem<UserPreferences>(STORAGE_KEYS.USER_PREFERENCES)
+
+  const existingPreferences = getStorageItem<UserPreferences>(
+    STORAGE_KEYS.USER_PREFERENCES,
+  )
   if (!existingPreferences) {
     setStorageItem(STORAGE_KEYS.USER_PREFERENCES, {
       selectedTopics: [],
       savedArticles: [],
     })
+  }
+
+  const existingAccounts = getStorageItem<Array<UserAccount>>(
+    STORAGE_KEYS.USER_ACCOUNTS,
+  )
+  if (!existingAccounts || existingAccounts.length === 0) {
+    setStorageItem(STORAGE_KEYS.USER_ACCOUNTS, MOCK_USER_ACCOUNTS)
   }
 }

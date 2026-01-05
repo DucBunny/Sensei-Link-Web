@@ -7,6 +7,7 @@ export const STORAGE_KEYS = {
   SESSIONS: 'sensei-link-sessions',
   TOPICS: 'sensei-link-topics',
   USER_PREFERENCES: 'sensei-link-user-preferences',
+  USER_ACCOUNTS: 'sensei-link-user-accounts',
   CURRENT_USER: 'sensei-link-current-user',
   MOCK_DATA_LOADED: 'sensei-link-mock-data-loaded',
 } as const

@@ -1,6 +1,6 @@
 import type { Topic } from '@/features/topics/types/topic'
 import type { Article } from '@/features/articles/types/article'
-import type { User } from '@/api/users'
+import type { User, UserAccount } from '@/api/users'
 import type { Interaction } from '@/features/interactions/types/interaction'
 import type { ConnectionSession } from '@/features/sessions/types/session'
 
@@ -55,26 +55,33 @@ export const MOCK_TOPICS: Topic[] = [
 /**
  * Mock Users
  */
-export const MOCK_USERS: User[] = [
+export const MOCK_USER_ACCOUNTS: Array<UserAccount> = [
   {
     id: 'user-1',
     name: 'Tanaka Sensei',
     email: 'tanaka@example.com',
+    password: '123456',
     createdAt: new Date('2024-01-15').toISOString(),
   },
   {
     id: 'user-2',
     name: 'Suzuki Sensei',
     email: 'suzuki@example.com',
+    password: '123456',
     createdAt: new Date('2024-02-20').toISOString(),
   },
   {
     id: 'user-3',
     name: 'Yamada Sensei',
     email: 'yamada@example.com',
+    password: '123456',
     createdAt: new Date('2024-03-10').toISOString(),
   },
 ]
+
+export const MOCK_USERS: Array<User> = MOCK_USER_ACCOUNTS.map(
+  ({ password, ...user }) => user,
+)
 
 /**
  * Mock Articles
