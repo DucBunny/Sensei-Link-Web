@@ -1,6 +1,6 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router'
 import { ThemeProvider } from 'next-themes'
-import { Toaster } from 'sonner'
+import { Toaster } from '@/components/ui/sonner'
 import { initializeData } from '@/api'
 
 // Initialize data on app load

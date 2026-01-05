@@ -2,11 +2,17 @@ import { AppSidebar } from './AppSidebar'
 import { AppHeader } from './AppHeader'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 
+interface BreadcrumbItemData {
+  label: string
+  href?: string
+}
+
 interface AppLayoutProps {
   children: React.ReactNode
   searchQuery?: string
   onSearchChange?: (value: string) => void
   onCreateArticle?: () => void
+  breadcrumbs?: BreadcrumbItemData[]
 }
 
 export function AppLayout({
@@ -14,6 +20,7 @@ export function AppLayout({
   searchQuery = '',
   onSearchChange = () => {},
   onCreateArticle,
+  breadcrumbs,
 }: AppLayoutProps) {
   return (
     <SidebarProvider>
@@ -23,9 +30,10 @@ export function AppLayout({
           searchQuery={searchQuery}
           onSearchChange={onSearchChange}
           onCreateArticle={onCreateArticle}
+          breadcrumbs={breadcrumbs}
         />
         <div className="flex flex-1 flex-col">
-          <div className="bg-muted/50 flex-1 rounded-xl p-6 md:p-8">
+          <div className="bg-muted/50 flex-1 rounded-xl p-4 md:p-6">
             {children}
           </div>
         </div>
