@@ -28,17 +28,14 @@ export interface UserPreferences {
 /**
  * Get current user (for demo, return first user)
  */
-export function getCurrentUser(): User {
+export function getCurrentUser(): User | null {
   const user = getStorageItem<User>(STORAGE_KEYS.CURRENT_USER)
 
   if (user) {
     return user
   }
 
-  // If no user in storage, use first mock user
-  const defaultUser = MOCK_USERS[0]
-  setStorageItem(STORAGE_KEYS.CURRENT_USER, defaultUser)
-  return defaultUser
+  return null
 }
 
 /**
@@ -46,6 +43,13 @@ export function getCurrentUser(): User {
  */
 export function setCurrentUser(user: User): void {
   setStorageItem(STORAGE_KEYS.CURRENT_USER, user)
+}
+
+/**
+ * Clear current user
+ */
+export function clearCurrentUser(): void {
+  localStorage.removeItem(STORAGE_KEYS.CURRENT_USER)
 }
 
 /**
@@ -180,4 +184,16 @@ export function initializeUsers(): void {
   if (!existingAccounts || existingAccounts.length === 0) {
     setStorageItem(STORAGE_KEYS.USER_ACCOUNTS, MOCK_USER_ACCOUNTS)
   }
+}
+
+/**
+ * Get user by ID
+ */
+export function getUserById(userId: string): User | null {
+  const users = getStorageItem<Array<User>>(STORAGE_KEYS.USER_ACCOUNTS)
+  if (users) {
+    const user = users.find((u) => u.id === userId)
+    return user || null
+  }
+  return null
 }

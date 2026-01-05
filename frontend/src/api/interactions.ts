@@ -1,34 +1,42 @@
+import type {
+  CreateInteractionInput,
+  Interaction,
+} from '@/features/interactions/types/interaction'
 import { getStorageItem, setStorageItem } from '@/lib/localStorage'
 import { STORAGE_KEYS } from '@/lib/constants'
-import type { Interaction, CreateInteractionInput } from '@/features/interactions/types/interaction'
 import { MOCK_INTERACTIONS } from '@/lib/mockData'
 
 /**
  * Get all interactions
  */
-export function getAllInteractions(): Interaction[] {
-  const interactions = getStorageItem<Interaction[]>(STORAGE_KEYS.INTERACTIONS) || []
-  
+export function getAllInteractions(): Array<Interaction> {
+  const interactions =
+    getStorageItem<Array<Interaction>>(STORAGE_KEYS.INTERACTIONS) || []
+
   // If no interactions in storage, return mock data
   if (interactions.length === 0) {
     return MOCK_INTERACTIONS
   }
-  
+
   return interactions
 }
 
 /**
  * Get interactions for a specific article
  */
-export function getInteractionsByArticle(articleId: string): Interaction[] {
+export function getInteractionsByArticle(
+  articleId: string,
+): Array<Interaction> {
   const interactions = getAllInteractions()
-  return interactions.filter((interaction) => interaction.articleId === articleId)
+  return interactions.filter(
+    (interaction) => interaction.articleId === articleId,
+  )
 }
 
 /**
  * Get interactions by a specific user
  */
-export function getUserInteractions(userId: string): Interaction[] {
+export function getUserInteractions(userId: string): Array<Interaction> {
   const interactions = getAllInteractions()
   return interactions.filter((interaction) => interaction.userId === userId)
 }
@@ -38,9 +46,12 @@ export function getUserInteractions(userId: string): Interaction[] {
  */
 export function addInteraction(data: CreateInteractionInput): Interaction {
   const interactions = getAllInteractions()
-  
+
   // Validate comment content
-  if (data.type === 'comment' && (!data.content || data.content.trim().length === 0)) {
+  if (
+    data.type === 'comment' &&
+    (!data.content || data.content.trim().length === 0)
+  ) {
     throw new Error('Comment content is required')
   }
 
@@ -77,7 +88,10 @@ export function removeInteraction(id: string): boolean {
 /**
  * Check if user marked article as useful
  */
-export function isArticleUsefulForUser(articleId: string, userId: string): boolean {
+export function isArticleUsefulForUser(
+  articleId: string,
+  userId: string,
+): boolean {
   const interactions = getAllInteractions()
   return interactions.some(
     (interaction) =>
@@ -107,9 +121,8 @@ export function getCommentCount(articleId: string): number {
  * Initialize interactions (load mock data if empty)
  */
 export function initializeInteractions(): void {
-  const existing = getStorageItem<Interaction[]>(STORAGE_KEYS.INTERACTIONS)
+  const existing = getStorageItem<Array<Interaction>>(STORAGE_KEYS.INTERACTIONS)
   if (!existing || existing.length === 0) {
     setStorageItem(STORAGE_KEYS.INTERACTIONS, MOCK_INTERACTIONS)
   }
 }
-

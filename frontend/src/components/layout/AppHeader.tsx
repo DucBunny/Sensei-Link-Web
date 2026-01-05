@@ -1,5 +1,4 @@
-import { memo } from 'react'
-import React from 'react'
+import React, { memo } from 'react'
 import { motion } from 'framer-motion'
 import { Bell, Plus, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -22,12 +21,19 @@ interface AppHeaderProps {
   searchQuery: string
   onSearchChange: (value: string) => void
   onCreateArticle?: () => void
-  breadcrumbs?: BreadcrumbItemData[]
+  breadcrumbs?: Array<BreadcrumbItemData>
 }
 
 export const AppHeader = memo(
-  ({ searchQuery, onSearchChange, onCreateArticle, breadcrumbs }: AppHeaderProps) => {
-    const defaultBreadcrumbs: BreadcrumbItemData[] = [{ label: 'ホーム', href: '/' }]
+  ({
+    searchQuery,
+    onSearchChange,
+    onCreateArticle,
+    breadcrumbs,
+  }: AppHeaderProps) => {
+    const defaultBreadcrumbs: Array<BreadcrumbItemData> = [
+      { label: 'ホーム', href: '/' },
+    ]
     const displayBreadcrumbs = breadcrumbs || defaultBreadcrumbs
 
     return (
@@ -41,14 +47,16 @@ export const AppHeader = memo(
                 <React.Fragment key={index}>
                   <BreadcrumbItem className="hidden md:block">
                     {index < displayBreadcrumbs.length - 1 && item.href ? (
-                      <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                      <BreadcrumbLink href={item.href}>
+                        {item.label}
+                      </BreadcrumbLink>
                     ) : (
                       <span className="text-foreground">{item.label}</span>
                     )}
                   </BreadcrumbItem>
                   {index < displayBreadcrumbs.length - 1 && (
                     <BreadcrumbItem className="hidden md:block">
-                      <span className="mx-1 text-muted-foreground">/</span>
+                      <span className="text-muted-foreground mx-1">/</span>
                     </BreadcrumbItem>
                   )}
                 </React.Fragment>

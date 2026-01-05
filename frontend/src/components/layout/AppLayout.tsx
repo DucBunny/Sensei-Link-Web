@@ -12,7 +12,7 @@ interface AppLayoutProps {
   searchQuery?: string
   onSearchChange?: (value: string) => void
   onCreateArticle?: () => void
-  breadcrumbs?: BreadcrumbItemData[]
+  breadcrumbs?: Array<BreadcrumbItemData>
 }
 
 export function AppLayout({
@@ -33,9 +33,7 @@ export function AppLayout({
           breadcrumbs={breadcrumbs}
         />
         <div className="flex flex-1 flex-col">
-          <div className="bg-muted/50 flex-1 rounded-xl p-4 md:p-6">
-            {children}
-          </div>
+          <div className="bg-muted/50 flex-1 p-4 md:p-6">{children}</div>
         </div>
       </SidebarInset>
     </SidebarProvider>

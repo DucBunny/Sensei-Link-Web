@@ -1,14 +1,17 @@
 'use client'
 
-import { getAllTopics } from '@/api/topics'
 import { TopicTag } from './TopicTag'
+import { getAllTopics } from '@/api/topics'
 
 interface TopicFilterProps {
-  selectedTopicIds: string[]
-  onTopicChange: (topicIds: string[]) => void
+  selectedTopicIds: Array<string>
+  onTopicChange: (topicIds: Array<string>) => void
 }
 
-export function TopicFilter({ selectedTopicIds, onTopicChange }: TopicFilterProps) {
+export function TopicFilter({
+  selectedTopicIds,
+  onTopicChange,
+}: TopicFilterProps) {
   const topics = getAllTopics()
 
   const toggleTopic = (topicId: string) => {
@@ -29,9 +32,11 @@ export function TopicFilter({ selectedTopicIds, onTopicChange }: TopicFilterProp
             <button
               key={topic.id}
               onClick={() => toggleTopic(topic.id)}
-              className="transition-all hover:opacity-80"
-            >
-              <TopicTag topic={topic} variant={isSelected ? 'default' : 'outline'} />
+              className="transition-all hover:opacity-80">
+              <TopicTag
+                topic={topic}
+                variant={isSelected ? 'default' : 'outline'}
+              />
             </button>
           )
         })}
@@ -39,4 +44,3 @@ export function TopicFilter({ selectedTopicIds, onTopicChange }: TopicFilterProp
     </div>
   )
 }
-
