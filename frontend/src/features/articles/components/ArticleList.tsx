@@ -1,17 +1,22 @@
 'use client'
 
-import type { Article } from '../types/article'
 import { ArticleCard } from './ArticleCard'
+import type { Article } from '../types/article'
 
 interface ArticleListProps {
-  articles: Article[]
+  articles: Array<Article>
   emptyMessage?: string
+  onSessionClick: (article: Article) => void
 }
 
-export function ArticleList({ articles, emptyMessage = '記事が見つかりません' }: ArticleListProps) {
+export function ArticleList({
+  articles,
+  emptyMessage = '記事が見つかりません',
+  onSessionClick,
+}: ArticleListProps) {
   if (articles.length === 0) {
     return (
-      <div className="rounded-lg border bg-card p-12 text-center">
+      <div className="bg-card rounded-lg border p-12 text-center">
         <p className="text-muted-foreground">{emptyMessage}</p>
       </div>
     )
@@ -20,9 +25,12 @@ export function ArticleList({ articles, emptyMessage = '記事が見つかりま
   return (
     <div className="space-y-4">
       {articles.map((article) => (
-        <ArticleCard key={article.id} article={article} />
+        <ArticleCard
+          key={article.id}
+          article={article}
+          onSessionClick={onSessionClick}
+        />
       ))}
     </div>
   )
 }
-

@@ -7,7 +7,7 @@ import type { ConnectionSession } from '@/features/sessions/types/session'
 /**
  * Mock Topics
  */
-export const MOCK_TOPICS: Topic[] = [
+export const MOCK_TOPICS: Array<Topic> = [
   {
     id: '1',
     name: 'Classroom Management',
@@ -68,14 +68,147 @@ export const MOCK_USER_ACCOUNTS: Array<UserAccount> = [
     name: 'Suzuki Sensei',
     email: 'suzuki@example.com',
     password: '123456',
-    createdAt: new Date('2024-02-20').toISOString(),
+    createdAt: new Date('2024-01-20').toISOString(),
   },
   {
     id: 'user-3',
     name: 'Yamada Sensei',
     email: 'yamada@example.com',
     password: '123456',
+    createdAt: new Date('2024-01-25').toISOString(),
+  },
+  {
+    id: 'user-4',
+    name: 'Sato Sensei',
+    email: 'sato@example.com',
+    password: '123456',
+    createdAt: new Date('2024-02-01').toISOString(),
+  },
+  {
+    id: 'user-5',
+    name: 'Kobayashi Sensei',
+    email: 'kobayashi@example.com',
+    password: '123456',
+    createdAt: new Date('2024-02-05').toISOString(),
+  },
+  {
+    id: 'user-6',
+    name: 'Ito Sensei',
+    email: 'ito@example.com',
+    password: '123456',
+    createdAt: new Date('2024-02-10').toISOString(),
+  },
+  {
+    id: 'user-7',
+    name: 'Nakamura Sensei',
+    email: 'nakamura@example.com',
+    password: '123456',
+    createdAt: new Date('2024-02-15').toISOString(),
+  },
+  {
+    id: 'user-8',
+    name: 'Yoshida Sensei',
+    email: 'yoshida@example.com',
+    password: '123456',
+    createdAt: new Date('2024-02-20').toISOString(),
+  },
+  {
+    id: 'user-9',
+    name: 'Yamamoto Sensei',
+    email: 'yamamoto@example.com',
+    password: '123456',
+    createdAt: new Date('2024-02-25').toISOString(),
+  },
+  {
+    id: 'user-10',
+    name: 'Kato Sensei',
+    email: 'kato@example.com',
+    password: '123456',
+    createdAt: new Date('2024-03-01').toISOString(),
+  },
+  {
+    id: 'user-11',
+    name: 'Matsumoto Sensei',
+    email: 'matsumoto@example.com',
+    password: '123456',
+    createdAt: new Date('2024-03-05').toISOString(),
+  },
+  {
+    id: 'user-12',
+    name: 'Inoue Sensei',
+    email: 'inoue@example.com',
+    password: '123456',
     createdAt: new Date('2024-03-10').toISOString(),
+  },
+  {
+    id: 'user-13',
+    name: 'Kimura Sensei',
+    email: 'kimura@example.com',
+    password: '123456',
+    createdAt: new Date('2024-03-15').toISOString(),
+  },
+  {
+    id: 'user-14',
+    name: 'Hayashi Sensei',
+    email: 'hayashi@example.com',
+    password: '123456',
+    createdAt: new Date('2024-03-20').toISOString(),
+  },
+  {
+    id: 'user-15',
+    name: 'Shimizu Sensei',
+    email: 'shimizu@example.com',
+    password: '123456',
+    createdAt: new Date('2024-03-25').toISOString(),
+  },
+  {
+    id: 'user-16',
+    name: 'Abe Sensei',
+    email: 'abe@example.com',
+    password: '123456',
+    createdAt: new Date('2024-04-01').toISOString(),
+  },
+  {
+    id: 'user-17',
+    name: 'Ikeda Sensei',
+    email: 'ikeda@example.com',
+    password: '123456',
+    createdAt: new Date('2024-04-05').toISOString(),
+  },
+  {
+    id: 'user-18',
+    name: 'Hashimoto Sensei',
+    email: 'hashimoto@example.com',
+    password: '123456',
+    createdAt: new Date('2024-04-10').toISOString(),
+  },
+  {
+    id: 'user-19',
+    name: 'Ishikawa Sensei',
+    email: 'ishikawa@example.com',
+    password: '123456',
+    createdAt: new Date('2024-04-15').toISOString(),
+  },
+  {
+    id: 'user-20',
+    name: 'Maeda Sensei',
+    email: 'maeda@example.com',
+    password: '123456',
+    createdAt: new Date('2024-04-20').toISOString(),
+  },
+  {
+    id: 'user-21',
+    name: 'Ishikawa Sensei 123',
+    email: 'ishikawa1451@example.com',
+    password: '123456',
+    createdAt: new Date('2024-04-15').toISOString(),
+  },
+  {
+    id: 'user-22',
+    name: 'Maeda Sensei 234',
+    email: 'maeda123@example.com',
+    password: '123456',
+    createdAt: new Date('2024-04-20').toISOString(),
   },
 ]
 
@@ -86,7 +219,7 @@ export const MOCK_USERS: Array<User> = MOCK_USER_ACCOUNTS.map(
 /**
  * Mock Articles
  */
-export const MOCK_ARTICLES: Article[] = [
+export const MOCK_ARTICLES: Array<Article> = [
   {
     id: 'article-1',
     title: '初回授業の簡単なアイスブレイカー',
@@ -188,7 +321,7 @@ export const MOCK_ARTICLES: Article[] = [
 /**
  * Mock Interactions
  */
-export const MOCK_INTERACTIONS: Interaction[] = [
+export const MOCK_INTERACTIONS: Array<Interaction> = [
   {
     id: 'interaction-1',
     articleId: 'article-1',
@@ -261,9 +394,302 @@ export const MOCK_INTERACTIONS: Interaction[] = [
     type: 'useful',
     createdAt: new Date('2024-12-04T10:00:00').toISOString(),
   },
+  {
+    id: 'interaction-11',
+    articleId: 'article-1',
+    userId: 'user-4',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T13:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-12',
+    articleId: 'article-1',
+    userId: 'user-5',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T13:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-13',
+    articleId: 'article-1',
+    userId: 'user-6',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T14:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-14',
+    articleId: 'article-1',
+    userId: 'user-7',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T14:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-15',
+    articleId: 'article-1',
+    userId: 'user-8',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T15:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-16',
+    articleId: 'article-1',
+    userId: 'user-9',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T15:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-17',
+    articleId: 'article-1',
+    userId: 'user-10',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T16:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-18',
+    articleId: 'article-1',
+    userId: 'user-11',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T16:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-19',
+    articleId: 'article-1',
+    userId: 'user-12',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T17:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-20',
+    articleId: 'article-1',
+    userId: 'user-13',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T17:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-21',
+    articleId: 'article-1',
+    userId: 'user-14',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T18:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-22',
+    articleId: 'article-1',
+    userId: 'user-15',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T18:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-23',
+    articleId: 'article-1',
+    userId: 'user-16',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T19:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-24',
+    articleId: 'article-1',
+    userId: 'user-17',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T19:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-25',
+    articleId: 'article-1',
+    userId: 'user-18',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T20:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-26',
+    articleId: 'article-1',
+    userId: 'user-19',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T20:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-27',
+    articleId: 'article-1',
+    userId: 'user-20',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T21:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-28',
+    articleId: 'article-1',
+    userId: 'user-21',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T21:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-29',
+    articleId: 'article-1',
+    userId: 'user-22',
+    type: 'useful',
+    createdAt: new Date('2024-12-01T22:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-30',
+    articleId: 'article-2',
+    userId: 'user-4',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T12:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-31',
+    articleId: 'article-2',
+    userId: 'user-5',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T12:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-32',
+    articleId: 'article-2',
+    userId: 'user-6',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T13:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-33',
+    articleId: 'article-2',
+    userId: 'user-7',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T13:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-34',
+    articleId: 'article-2',
+    userId: 'user-8',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T14:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-35',
+    articleId: 'article-2',
+    userId: 'user-9',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T14:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-36',
+    articleId: 'article-2',
+    userId: 'user-10',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T15:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-37',
+    articleId: 'article-2',
+    userId: 'user-11',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T15:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-38',
+    articleId: 'article-2',
+    userId: 'user-12',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T16:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-39',
+    articleId: 'article-2',
+    userId: 'user-13',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T16:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-40',
+    articleId: 'article-2',
+    userId: 'user-14',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T17:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-41',
+    articleId: 'article-2',
+    userId: 'user-15',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T17:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-42',
+    articleId: 'article-2',
+    userId: 'user-16',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T18:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-43',
+    articleId: 'article-2',
+    userId: 'user-17',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T18:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-44',
+    articleId: 'article-2',
+    userId: 'user-18',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T19:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-45',
+    articleId: 'article-2',
+    userId: 'user-19',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T19:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-46',
+    articleId: 'article-2',
+    userId: 'user-20',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T20:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-47',
+    articleId: 'article-2',
+    userId: 'user-21',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T20:30:00').toISOString(),
+  },
+  {
+    id: 'interaction-48',
+    articleId: 'article-2',
+    userId: 'user-22',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T21:00:00').toISOString(),
+  },
+  {
+    id: 'interaction-49',
+    articleId: 'article-2',
+    userId: 'user-23',
+    type: 'useful',
+    createdAt: new Date('2024-12-02T21:30:00').toISOString(),
+  },
 ]
 
 /**
  * Mock Sessions (empty initially, will be created when articles reach threshold)
  */
-export const MOCK_SESSIONS: ConnectionSession[] = []
+export const MOCK_SESSIONS: Array<ConnectionSession> = [
+  {
+    id: 'session-1',
+    articleId: 'article-1',
+    topicId: '1',
+    title: '記事内容についてディスカッション',
+    description: 'この記事の内容を深掘りし、意見交換を行うセッションです。',
+    goal: '知見共有・理解深化',
+    status: 'open',
+    participantIds: ['user-22'],
+    minParticipants: 3,
+    createdAt: new Date().toISOString(),
+    expiresAt: new Date(
+      Date.now() + 1000 * 60 * 60 * 24, // +1 ngày
+    ).toISOString(),
+    hostId: 'user-1',
+    time: new Date(
+      Date.now() + 1000 * 60 * 60 * 48, // +2 ngày
+    ).toISOString(),
+  },
+]

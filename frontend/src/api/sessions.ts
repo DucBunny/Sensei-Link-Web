@@ -1,20 +1,24 @@
-import { getStorageItem, setStorageItem } from '@/lib/localStorage'
-import { STORAGE_KEYS, SESSION_MIN_PARTICIPANTS } from '@/lib/constants'
-import type { ConnectionSession, CreateSessionInput } from '@/features/sessions/types/session'
-import { MOCK_SESSIONS } from '@/lib/mockData'
 import { getUsefulCount } from './interactions'
+import type {
+  ConnectionSession,
+  CreateSessionInput,
+} from '@/features/sessions/types/session'
+import { getStorageItem, setStorageItem } from '@/lib/localStorage'
+import { SESSION_MIN_PARTICIPANTS, STORAGE_KEYS } from '@/lib/constants'
+import { MOCK_SESSIONS } from '@/lib/mockData'
 
 /**
  * Get all sessions
  */
-export function getAllSessions(): ConnectionSession[] {
-  const sessions = getStorageItem<ConnectionSession[]>(STORAGE_KEYS.SESSIONS) || []
-  
+export function getAllSessions(): Array<ConnectionSession> {
+  const sessions =
+    getStorageItem<Array<ConnectionSession>>(STORAGE_KEYS.SESSIONS) || []
+
   // If no sessions in storage, return mock data
   if (sessions.length === 0) {
     return MOCK_SESSIONS
   }
-  
+
   return sessions
 }
 
@@ -29,9 +33,9 @@ export function getSessionById(id: string): ConnectionSession | null {
 /**
  * Get sessions for a specific article
  */
-export function getSessionsByArticle(articleId: string): ConnectionSession[] {
+export function getSessionsByArticle(articleId: string): ConnectionSession {
   const sessions = getAllSessions()
-  return sessions.filter((session) => session.articleId === articleId)
+  return sessions.filter((session) => session.articleId === articleId)[0]
 }
 
 /**
@@ -51,6 +55,8 @@ export function createSession(data: CreateSessionInput): ConnectionSession {
     participantIds: [],
     minParticipants: data.minParticipants || SESSION_MIN_PARTICIPANTS,
     createdAt: new Date().toISOString(),
+    hostId: data.hostId,
+    time: data.time,
   }
 
   const updatedSessions = [...sessions, newSession]
@@ -81,7 +87,10 @@ export function joinSession(sessionId: string, userId: string): boolean {
   const updatedSession: ConnectionSession = {
     ...session,
     participantIds: [...session.participantIds, userId],
-    status: session.participantIds.length + 1 >= session.minParticipants ? 'connecting' : 'open',
+    status:
+      session.participantIds.length + 1 >= session.minParticipants
+        ? 'connecting'
+        : 'open',
   }
 
   const updatedSessions = [...sessions]
@@ -108,7 +117,10 @@ export function leaveSession(sessionId: string, userId: string): boolean {
   const updatedSession: ConnectionSession = {
     ...session,
     participantIds: session.participantIds.filter((id) => id !== userId),
-    status: session.participantIds.length - 1 < session.minParticipants ? 'open' : 'connecting',
+    status:
+      session.participantIds.length - 1 < session.minParticipants
+        ? 'open'
+        : 'connecting',
   }
 
   const updatedSessions = [...sessions]
@@ -130,17 +142,17 @@ export function isArticleEligibleForSession(articleId: string): boolean {
  * Check if session exists for article
  */
 export function hasSessionForArticle(articleId: string): boolean {
-  const sessions = getSessionsByArticle(articleId)
-  return sessions.length > 0
+  return Boolean(getSessionsByArticle(articleId))
 }
 
 /**
  * Initialize sessions (load mock data if empty)
  */
 export function initializeSessions(): void {
-  const existing = getStorageItem<ConnectionSession[]>(STORAGE_KEYS.SESSIONS)
+  const existing = getStorageItem<Array<ConnectionSession>>(
+    STORAGE_KEYS.SESSIONS,
+  )
   if (!existing || existing.length === 0) {
     setStorageItem(STORAGE_KEYS.SESSIONS, MOCK_SESSIONS)
   }
 }
-
