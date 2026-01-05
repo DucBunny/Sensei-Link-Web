@@ -17,10 +17,12 @@ export interface ConnectionSession {
   description: string
   goal: string // Mục tiêu giao lưu
   status: SessionStatus
-  participantIds: string[]
+  participantIds: Array<string>
   minParticipants: number
   createdAt: string // ISO date string
   expiresAt?: string // ISO date string
+  hostId: string
+  time: string
 }
 
 /**
@@ -33,4 +35,6 @@ export interface CreateSessionInput {
   description: string
   goal: string
   minParticipants?: number
+  hostId: string
+  time: string
 }

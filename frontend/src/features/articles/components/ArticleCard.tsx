@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { Bookmark, Clock, MessageCircle, UserPen, Users } from 'lucide-react'
+import { Bookmark, Clock, MessageCircle, Users } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { toast } from 'sonner'
@@ -16,26 +16,28 @@ import {
   isArticleUsefulForUser,
   removeInteraction,
 } from '@/api/interactions'
-import {
-  getCurrentUser,
-  getUserById,
-  saveArticle,
-  unsaveArticle,
-} from '@/api/users'
+import { getSessionsByArticle, hasSessionForArticle } from '@/api/sessions'
+import { getCurrentUser, saveArticle, unsaveArticle } from '@/api/users'
 import { Button } from '@/components/ui/button'
 
 interface ArticleCardProps {
   article: Article
+  onSessionClick: (article: Article) => void
 }
 
-export function ArticleCard({ article }: ArticleCardProps) {
+export function ArticleCard({ article, onSessionClick }: ArticleCardProps) {
   const currentUser = getCurrentUser()
   const author = getUserById(article.authorId)
   const [usefulCount, setUsefulCount] = useState(getUsefulCount(article.id))
   const [isUseful, setIsUseful] = useState(
-    currentUser ? isArticleUsefulForUser(article.id, currentUser.id) : false,
+    isArticleUsefulForUser(article.id, currentUser.id),
   )
   const commentCount = getCommentCount(article.id)
+
+  // Session manage
+  const isOwner = currentUser.id === article.authorId
+  const canJoinSession = usefulCount >= 20
+  const hasSession = hasSessionForArticle(article.id)
 
   // Calculate time ago
   const timeAgo = formatDistanceToNow(new Date(article.createdAt), {
@@ -113,19 +115,46 @@ export function ArticleCard({ article }: ArticleCardProps) {
       <div className="bg-card rounded-lg border p-7 transition-all hover:shadow-md">
         {/* Header: Topic and Time */}
         <div className="mb-3 flex items-center justify-between">
+          {/* LEFT */}
           <div className="flex items-center gap-2">
             {article.topic && (
               <TopicTag topic={article.topic} variant="outline" />
             )}
             <span className="text-muted-foreground text-xs">{timeAgo}</span>
           </div>
-          <Button
-            variant={isUseful ? 'default' : 'ghost'}
-            size="sm"
-            onClick={handleUsefulToggle}
-            className="h-8 w-8 p-0">
-            <Bookmark className={`h-5 w-5 ${isUseful ? 'fill-current' : ''}`} />
-          </Button>
+
+          {/* RIGHT */}
+          <div className="flex items-center gap-2">
+            {canJoinSession && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  onSessionClick(article)
+                }}>
+                {isOwner
+                  ? hasSession
+                    ? 'セッション詳細'
+                    : 'セッション作成'
+                  : 'セッション参加'}
+              </Button>
+            )}
+
+            <Button
+              variant={isUseful ? 'default' : 'ghost'}
+              size="icon"
+              onClick={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
+                handleUsefulToggle(e)
+              }}>
+              <Bookmark
+                className={`h-5 w-5 ${isUseful ? 'fill-current' : ''}`}
+              />
+            </Button>
+          </div>
         </div>
 
         {/* Title */}
@@ -140,14 +169,6 @@ export function ArticleCard({ article }: ArticleCardProps) {
 
         {/* Footer: Stats */}
         <div className="text-muted-foreground flex items-center gap-4 text-sm">
-          <div className="flex items-center gap-1.5">
-            <UserPen className="h-4 w-4" />
-            <span>
-              {author?.id === currentUser?.id
-                ? 'あなた'
-                : `${author?.name}先生`}
-            </span>
-          </div>
           <div className="flex items-center gap-1.5">
             <Clock className="h-4 w-4" />
             <span>{article.readTime}分</span>
