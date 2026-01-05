@@ -3,8 +3,12 @@ import { AppLayout } from '@/components/layout/AppLayout'
 
 function SessionsPage() {
   return (
-    <AppLayout>
-      <div className="container mx-auto py-8">
+    <AppLayout
+      breadcrumbs={[
+        { label: 'セッション' },
+      ]}
+    >
+      <div className="container mx-auto">
         <h1 className="text-3xl font-bold mb-6">交流セッション</h1>
         <p className="text-muted-foreground mb-8">
           同じ興味を持つ教師とつながるためにセッションに参加しましょう
