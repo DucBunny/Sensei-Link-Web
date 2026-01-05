@@ -7,7 +7,7 @@ import type { ConnectionSession } from '@/features/sessions/types/session'
 /**
  * Mock Topics
  */
-export const MOCK_TOPICS: Array<Topic> = [
+export const MOCK_TOPICS: Topic[] = [
   {
     id: '1',
     name: 'Classroom Management',
@@ -86,7 +86,7 @@ export const MOCK_USERS: Array<User> = MOCK_USER_ACCOUNTS.map(
 /**
  * Mock Articles
  */
-export const MOCK_ARTICLES: Array<Article> = [
+export const MOCK_ARTICLES: Article[] = [
   {
     id: 'article-1',
     title: '初回授業の簡単なアイスブレイカー',
@@ -188,7 +188,7 @@ export const MOCK_ARTICLES: Array<Article> = [
 /**
  * Mock Interactions
  */
-export const MOCK_INTERACTIONS: Array<Interaction> = [
+export const MOCK_INTERACTIONS: Interaction[] = [
   {
     id: 'interaction-1',
     articleId: 'article-1',
@@ -266,4 +266,4 @@ export const MOCK_INTERACTIONS: Array<Interaction> = [
 /**
  * Mock Sessions (empty initially, will be created when articles reach threshold)
  */
-export const MOCK_SESSIONS: Array<ConnectionSession> = []
+export const MOCK_SESSIONS: ConnectionSession[] = []

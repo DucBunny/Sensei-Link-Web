@@ -17,7 +17,7 @@ export interface ConnectionSession {
   description: string
   goal: string // Mục tiêu giao lưu
   status: SessionStatus
-  participantIds: Array<string>
+  participantIds: string[]
   minParticipants: number
   createdAt: string // ISO date string
   expiresAt?: string // ISO date string
