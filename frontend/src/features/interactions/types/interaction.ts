@@ -24,4 +24,3 @@ export interface CreateInteractionInput {
   type: InteractionType
   content?: string // Required if type is 'comment'
 }
-

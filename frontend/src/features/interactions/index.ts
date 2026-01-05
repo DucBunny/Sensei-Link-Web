@@ -7,4 +7,3 @@ export * from './types/interaction'
 
 // Export hooks (will be added later)
 // export * from './hooks/useInteractions'
-

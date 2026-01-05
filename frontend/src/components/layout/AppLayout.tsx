@@ -1,8 +1,6 @@
-'use client'
-
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar'
 import { AppSidebar } from './AppSidebar'
 import { AppHeader } from './AppHeader'
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -26,8 +24,8 @@ export function AppLayout({
           onSearchChange={onSearchChange}
           onCreateArticle={onCreateArticle}
         />
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:p-8">
+        <div className="flex flex-1 flex-col">
+          <div className="bg-muted/50 flex-1 rounded-xl p-6 md:p-8">
             {children}
           </div>
         </div>
@@ -35,4 +33,3 @@ export function AppLayout({
     </SidebarProvider>
   )
 }
-

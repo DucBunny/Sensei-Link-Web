@@ -48,4 +48,3 @@ export interface ArticleWithStats extends Article {
   isUseful?: boolean // For current user
   isSaved?: boolean // For current user
 }
-
