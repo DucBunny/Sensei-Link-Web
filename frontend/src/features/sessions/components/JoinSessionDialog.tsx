@@ -110,58 +110,62 @@ export const JoinSessionDialog = ({
       </DialogHeader>
 
       <div className="mt-2 space-y-3 text-sm">
-        <p>
-          <b>タイトル:</b> {localSession.title}
-        </p>
-        <p>
-          <b>説明:</b> {localSession.description}
-        </p>
-        <p>
-          <b>目的:</b> {localSession.goal}
-        </p>
-        <p>
-          <b>開催日時:</b>{' '}
-          {localSession.time
-            ? new Date(localSession.time).toLocaleString('ja-JP')
-            : '未定'}
-        </p>
-        <p>
-          <b>ホスト:</b> {hostUser ? hostUser.name : localSession.hostId}
-        </p>
-        <p>
-          <b>参加人数:</b> {localSession.participantIds.length} /{' '}
-          {localSession.minParticipants}
-        </p>
+        {!showInfoDialog && (
+          <>
+            <p>
+              <b>タイトル:</b> {localSession.title}
+            </p>
+            <p>
+              <b>説明:</b> {localSession.description}
+            </p>
+            <p>
+              <b>目的:</b> {localSession.goal}
+            </p>
+            <p>
+              <b>開催日時:</b>{' '}
+              {localSession.time
+                ? new Date(localSession.time).toLocaleString('ja-JP')
+                : '未定'}
+            </p>
+            <p>
+              <b>ホスト:</b> {hostUser ? hostUser.name : localSession.hostId}
+            </p>
+            <p>
+              <b>参加人数:</b> {localSession.participantIds.length} /{' '}
+              {localSession.minParticipants}
+            </p>
 
-        <div>
-          <b>参加者一覧:</b>
-          <ul className="mt-2 ml-4 list-disc">
-            {localSession.participantIds.map((uid) => {
-              const user = MOCK_USERS.find((u) => u.id === uid)
-              const info = localSession.participantInfoMap?.[uid]
-              return (
-                <li key={uid} className="mb-1">
-                  <div className="flex items-center gap-2">
-                    {user?.avatar && (
-                      <img
-                        src={user.avatar}
-                        alt={user.name}
-                        className="h-6 w-6 rounded-full"
-                      />
-                    )}
-                    <span>{user?.name || uid}</span>
-                    {info && (
-                      <div className="text-muted-foreground ml-2 text-xs">
-                        <div>{info.note}</div>
-                        <div>{info.email}</div>
+            <div>
+              <b>参加者一覧:</b>
+              <ul className="mt-2 ml-4 list-disc">
+                {localSession.participantIds.map((uid) => {
+                  const user = MOCK_USERS.find((u) => u.id === uid)
+                  const info = localSession.participantInfoMap?.[uid]
+                  return (
+                    <li key={uid} className="mb-1">
+                      <div className="flex items-center gap-2">
+                        {user?.avatar && (
+                          <img
+                            src={user.avatar}
+                            alt={user.name}
+                            className="h-6 w-6 rounded-full"
+                          />
+                        )}
+                        <span>{user?.name || uid}</span>
+                        {info && (
+                          <div className="text-muted-foreground ml-2 text-xs">
+                            <div>{info.note}</div>
+                            <div>{info.email}</div>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          </>
+        )}
 
         {!isHost && (
           <>
@@ -180,7 +184,7 @@ export const JoinSessionDialog = ({
 
             {showInfoDialog && (
               <div className="fixed inset-0 z-50 flex w-lg items-center justify-center">
-                <div className="my-10 w-full rounded-lg bg-white px-6 py-10 shadow-lg">
+                <div className="w-full rounded-lg bg-white p-6 shadow-lg">
                   <div className="mb-4 text-base font-bold text-black">
                     セッション参加には追加情報が必要です。
                   </div>
