@@ -69,7 +69,7 @@ export function createSession(data: CreateSessionInput): ConnectionSession {
     goal: data.goal,
     status: 'open',
     participantIds: [],
-    minParticipants: data.minParticipants || SESSION_MIN_PARTICIPANTS,
+    maxParticipants: data.maxParticipants || 5,
     createdAt: new Date().toISOString(),
     hostId: data.hostId,
     time: data.time,
@@ -112,7 +112,7 @@ export function joinSession(
       ...(participantInfo ? { [userId]: participantInfo } : {}),
     },
     status:
-      session.participantIds.length + 1 >= session.minParticipants
+      session.participantIds.length + 1 >= session.maxParticipants
         ? 'connecting'
         : 'open',
   }
@@ -142,7 +142,7 @@ export function leaveSession(sessionId: string, userId: string): boolean {
     ...session,
     participantIds: session.participantIds.filter((id) => id !== userId),
     status:
-      session.participantIds.length - 1 < session.minParticipants
+      session.participantIds.length - 1 < session.maxParticipants
         ? 'open'
         : 'connecting',
   }

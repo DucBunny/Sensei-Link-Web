@@ -46,7 +46,7 @@ export const JoinSessionDialog = ({
   const hostUser = MOCK_USERS.find((u) => u.id === localSession.hostId)
 
   const handleJoin = () => {
-    if (!canJoin) return
+    if (!canJoin || !user) return
     setEmail(user.email || '')
     setCustomInfo('')
     setError('')
@@ -75,7 +75,7 @@ export const JoinSessionDialog = ({
           [currentUserId]: { email, note: customInfo },
         },
         status:
-          localSession.participantIds.length + 1 >= localSession.minParticipants
+          localSession.participantIds.length + 1 >= localSession.maxParticipants
             ? 'connecting'
             : 'open',
       })
@@ -94,7 +94,7 @@ export const JoinSessionDialog = ({
           (id) => id !== currentUserId,
         ),
         status:
-          localSession.participantIds.length - 1 < localSession.minParticipants
+          localSession.participantIds.length - 1 < localSession.maxParticipants
             ? 'open'
             : 'connecting',
       })
@@ -132,7 +132,7 @@ export const JoinSessionDialog = ({
             </p>
             <p>
               <b>参加人数:</b> {localSession.participantIds.length} /{' '}
-              {localSession.minParticipants}
+              {localSession.maxParticipants}
             </p>
 
             <div>

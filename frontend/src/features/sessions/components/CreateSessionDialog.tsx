@@ -19,18 +19,23 @@ export const CreateSessionDialog = ({
   const [title, setTitle] = useState(article.title || '')
   const [description, setDescription] = useState('')
   const [goal, setGoal] = useState('')
-  const [minParticipants, setMinParticipants] = useState<number>(3)
+  const [maxParticipants, setMaxParticipants] = useState<number>(5)
   const [time, setTime] = useState('')
   const currentUser = getCurrentUser()
 
   const handleCreate = () => {
+    if (!currentUser) {
+      toast.error('ログインが必要です')
+      return
+    }
+
     const input: CreateSessionInput = {
       articleId: article.id,
       topicId: article.topicId,
       title,
       description,
       goal,
-      minParticipants,
+      maxParticipants,
       hostId: currentUser.id,
       time,
     }
@@ -42,7 +47,7 @@ export const CreateSessionDialog = ({
       setTitle('')
       setDescription('')
       setGoal('')
-      setMinParticipants(3)
+      setMaxParticipants(5)
       setOpenSession(false)
       setTime('')
     } catch (e) {
@@ -87,14 +92,14 @@ export const CreateSessionDialog = ({
           />
         </div>
 
-        {/* Min participants */}
+        {/* Max participants */}
         <div>
-          <Label className="mb-3 block">最小参加人数</Label>
+          <Label className="mb-3 block">最大参加人数</Label>
           <Input
             type="number"
             min={2}
-            value={minParticipants}
-            onChange={(e) => setMinParticipants(Number(e.target.value))}
+            value={maxParticipants}
+            onChange={(e) => setMaxParticipants(Number(e.target.value))}
           />
         </div>
 

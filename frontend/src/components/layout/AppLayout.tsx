@@ -18,7 +18,7 @@ interface AppLayoutProps {
 export function AppLayout({
   children,
   searchQuery = '',
-  onSearchChange = () => {},
+  onSearchChange = () => { },
   onCreateArticle,
   breadcrumbs,
 }: AppLayoutProps) {
