@@ -27,14 +27,7 @@ export function ArticleDetailPage() {
   const [openSession, setOpenSession] = useState(false)
   const [openJoin, setOpenJoin] = useState(false)
 
-  const currentUser = getCurrentUser()
-  const usefulCount = getUsefulCount(article.id)
-  const session = getSessionsByArticle(article.id)
-  const hasSession = !!session
-  const isHost = session && session.hostId === currentUser.id
-  const canJoinSession = usefulCount >= 20
-  const isJoined = session && session.participantIds.includes(currentUser.id)
-
+  // Early return if article not found
   if (!article) {
     return (
       <AppLayout
@@ -48,6 +41,15 @@ export function ArticleDetailPage() {
       </AppLayout>
     )
   }
+
+  // Safe to access article properties after null check
+  const currentUser = getCurrentUser()
+  const usefulCount = getUsefulCount(article.id)
+  const session = getSessionsByArticle(article.id)
+  const hasSession = !!session
+  const isHost = session && currentUser && session.hostId === currentUser.id
+  const canJoinSession = usefulCount >= 20
+  const isJoined = session && currentUser && session.participantIds.includes(currentUser.id)
 
   const timeAgo = formatDistanceToNow(new Date(article.createdAt), {
     addSuffix: true,
@@ -89,7 +91,7 @@ export function ArticleDetailPage() {
             />
           </div>
           {/* Session Button Logic */}
-          {canJoinSession && (
+          {canJoinSession && currentUser && (
             <div className="mt-2 flex gap-2">
               {/* Nếu là host */}
               {isHost ? (
@@ -149,10 +151,16 @@ export function ArticleDetailPage() {
 
         <Dialog open={openJoin} onOpenChange={setOpenJoin}>
           <DialogContent>
-            <JoinSessionDialog
-              session={session}
-              currentUserId={currentUser.id}
-            />
+            {session && currentUser ? (
+              <JoinSessionDialog
+                session={session}
+                currentUserId={currentUser.id}
+              />
+            ) : (
+              <p className="text-muted-foreground text-sm">
+                セッション情報が見つかりません
+              </p>
+            )}
           </DialogContent>
         </Dialog>
 

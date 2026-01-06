@@ -33,11 +33,11 @@ export function SessionsPage() {
       const updatedSessions = sessions.map((s) =>
         s.id === selectedSession.id
           ? {
-              ...s,
-              participantIds: s.participantIds.filter(
-                (id) => id !== currentUser.id,
-              ),
-            }
+            ...s,
+            participantIds: s.participantIds.filter(
+              (id) => id !== currentUser.id,
+            ),
+          }
           : s,
       )
       setSessions(updatedSessions)
@@ -83,7 +83,7 @@ export function SessionsPage() {
               </div>
               <div>
                 <b>参加人数:</b> {selectedSession.participantIds.length} /{' '}
-                {selectedSession.minParticipants}
+                {selectedSession.maxParticipants}
               </div>
               <div>
                 <b>状態:</b>{' '}
@@ -159,7 +159,7 @@ export function SessionsPage() {
                       </div>
                       <div className="mt-1 text-xs">
                         {session.participantIds.length} /{' '}
-                        {session.minParticipants} 参加者
+                        {session.maxParticipants} 参加者
                       </div>
                     </div>
                     <Button

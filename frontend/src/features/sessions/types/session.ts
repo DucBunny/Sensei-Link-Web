@@ -25,7 +25,7 @@ export interface ConnectionSession {
       note: string
     }
   >
-  minParticipants: number
+  maxParticipants: number
   createdAt: string // ISO date string
   expiresAt?: string // ISO date string
   hostId: string
@@ -41,7 +41,7 @@ export interface CreateSessionInput {
   title: string
   description: string
   goal: string
-  minParticipants?: number
+  maxParticipants?: number
   hostId: string
   time: string
 }
